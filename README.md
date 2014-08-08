@@ -1,5 +1,5 @@
-Units of Measure -- Proposal for TypeScript
-===========================================
+Units of Measure: Proposal for TypeScript
+=========================================
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
