@@ -76,6 +76,20 @@ declare type a = m/s^2;
 var myString : string<a>;   // compile error -- Cannot use a compound unit annotation for non-number types
 ```
 
+## Additional Cases
+
+```typescript
+declare type m;
+declare type email;
+declare type startDate;
+declare type flag;
+
+var number = new Number<m>();
+var str    = new String<email>();
+var date   = new String<startDate>();
+var bool   = new Boolean<flag>();
+```
+
 ## Supported Types
 
 * String
