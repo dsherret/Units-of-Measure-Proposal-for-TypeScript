@@ -55,7 +55,7 @@ acceleration += 12<m/s^2> * 10<s>; // compile error -- Cannot convert number<m/s
 ## Use with String, Boolean, and Date
 
 ```typescript
-declare type email : string;
+declare type email;
 
 function sendEmail(email: string<email>, message : string) {
     // send the email in here
@@ -64,6 +64,16 @@ function sendEmail(email: string<email>, message : string) {
 var myEmail = "david@email.com"<email>;
 sendEmail(myEmail, "Hello!");           // valid
 sendEmail("some string", "Hello!");     // compile error -- Cannot convert string to string<email>
+```
+
+Take note that the following is invalid with non-number types:
+
+```typescript
+declare type m;
+declare type s;
+declare type a = m/s^2;
+
+var myString : string<a>;   // compile error -- Cannot use a compound unit annotation for non-number types
 ```
 
 ## Supported Types
