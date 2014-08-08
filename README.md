@@ -9,19 +9,17 @@ Units of Measure -- Proposal for TypeScript
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on floating point and signed integer values.
 
-TypeScript could benefit from a similar Units of Measure feature and expand to include tiny type support for strings, booleans, and date objects. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
+TypeScript could benefit from a similar Units of Measure feature and expand to include tiny type support for `string`, `boolean`, and `date` objects. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
 
 # Defining Type Annotations
 
-Type annotations are defined similarly to ambient types.
+Type annotations are defined similarly to ambient types:
 
 ```typescript
 declare type <unit-name> [: type] [ = measure ];
 ```
 
-Where the specified type can be a `number`, `string`, `boolean`, or `Date`.
-
-Examples:
+**Examples:**
 
 ```typescript
 declare type m : number;
