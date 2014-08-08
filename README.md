@@ -84,10 +84,10 @@ declare type email;
 declare type startDate;
 declare type flag;
 
-var number = new Number<m>();
-var str    = new String<email>();
-var date   = new String<startDate>();
-var bool   = new Boolean<flag>();
+var number = new Number<m>(),
+    str    = new String<email>(),
+    date   = new String<startDate>(),
+    bool   = new Boolean<flag>();
 ```
 
 ## Supported Types
