@@ -16,16 +16,16 @@ TypeScript could benefit from a similar Units of Measure feature and expand to i
 Type annotations are defined similarly to ambient types:
 
 ```typescript
-declare type <unit-name> [: type] [ = measure ];
+declare type <unit-name> [ = measure ];
 ```
 
 **Examples:**
 
 ```typescript
-declare type m : number;
-declare type s : number;
+declare type m;
+declare type s;
 declare type a = m/s^2;
-declare type email : string;
+declare type email;
 ```
 
 Note: The caret symbol is not used as the bitwise XOR operator, but as an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
@@ -33,8 +33,8 @@ Note: The caret symbol is not used as the bitwise XOR operator, but as an expone
 ## Use with Number
 
 ```typescript
-declare type m : number;
-declare type s : number;
+declare type m;
+declare type s;
 declare type a = m/s^2;
 
 var acceleration = 12<a>,
