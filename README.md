@@ -5,13 +5,13 @@ Units of Measure: Proposal for TypeScript
 
 -- Unfinished --
 
-# Overview
+## Overview
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on floating point and signed integer values.
 
 TypeScript could benefit from a similar Units of Measure feature and expand to include tiny type support for `string`, `boolean`, and `date` objects. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
 
-# Defining Type Annotations
+## Defining Type Annotations
 
 Type annotations are defined similarly to ambient types:
 
@@ -30,7 +30,7 @@ declare type email : string;
 
 Note: The caret symbol is not used as the bitwise XOR operator, but as an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
 
-# Use with Number
+## Use with Number
 
 ```typescript
 declare type m : number;
@@ -66,7 +66,7 @@ sendEmail(myEmail, "Hello!");           // valid
 sendEmail("some string", "Hello!");     // compile error -- Cannot convert string to string<email>
 ```
 
-# Supported Types
+## Supported Types
 
 * String
 * Number
