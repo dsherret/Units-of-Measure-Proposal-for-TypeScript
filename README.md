@@ -3,13 +3,11 @@ Units of Measure: Proposal for TypeScript
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
--- Unfinished --
-
 ## Overview
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on floating point and signed integer values.
 
-TypeScript could benefit from a similar Units of Measure feature and expand to include tiny type support for `string`, `boolean`, and `date` objects. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
+TypeScript could benefit from a similar units of measure feature and expand to include tiny type support for `string`, `boolean`, and `date` objects. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
 
 ## Defining Type Annotations
 
@@ -18,6 +16,8 @@ Type annotations are defined similarly to ambient types:
 ```typescript
 declare type <unit-name> [ = measure ];
 ```
+
+The optional measure part can be used to define a new type in terms of previously defined types. Note that this composite type cannot be used with non-`number` types.
 
 **Examples:**
 
@@ -28,7 +28,7 @@ declare type a = m/s^2;
 declare type email;
 ```
 
-Note: The caret symbol is not used as the bitwise XOR operator, but as an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
+Note: The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
 
 ## Use with Number
 
@@ -66,14 +66,14 @@ sendEmail(myEmail, "Hello!");           // valid
 sendEmail("some string", "Hello!");     // compile error -- Cannot convert string to string<email>
 ```
 
-Take note that the following is invalid with non-number types:
+However, the following is invalid with non-number types:
 
 ```typescript
 declare type m;
 declare type s;
 declare type a = m/s^2;
 
-var myString : string<a>;   // compile error -- Cannot use a compound unit annotation for non-number types
+var myString : string<a>;   // compile error -- Cannot use composite types with non-number types
 ```
 
 ## Additional Cases
@@ -86,7 +86,7 @@ declare type flag;
 
 var num    = new Number<m>(),
     str    = new String<email>(),
-    date   = new String<startDate>(),
+    date   = new Date<startDate>(),
     b      = new Boolean<flag>();
 ```
 
@@ -96,3 +96,11 @@ var num    = new Number<m>(),
 * Number
 * Boolean
 * Date
+
+## Additional Considerations
+
+It might be beneficial to have a type constraint on these defined types. For example:
+
+```typescript
+declare type email : string;
+```
