@@ -90,13 +90,6 @@ var num    = new Number<m>(),
     b      = new Boolean<flag>();
 ```
 
-## Supported Types
-
-* String
-* Number
-* Boolean
-* Date
-
 ## Additional Considerations
 
 It might be beneficial to have a type constraint on these defined types. For example:
@@ -104,3 +97,10 @@ It might be beneficial to have a type constraint on these defined types. For exa
 ```typescript
 declare type email : string;
 ```
+
+## Supported Types
+
+* String
+* Number
+* Boolean
+* Date
