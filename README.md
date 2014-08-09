@@ -66,7 +66,7 @@ sendEmail(myEmail, "Hello!");           // valid
 sendEmail("some string", "Hello!");     // compile error -- Cannot convert string to string<email>
 ```
 
-However, the following is invalid with non-number types:
+The following is invalid with non-number types:
 
 ```typescript
 declare type m;
