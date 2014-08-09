@@ -11,21 +11,21 @@ TypeScript could benefit from a similar units of measure feature and expand to i
 
 ## Defining Type Annotations
 
-Type annotations are defined similarly to ambient types:
+Type annotations are defined as such:
 
 ```typescript
-declare type <unit-name> [ = measure ];
+type <annotation-name> [extends <type-name>] [ = measure ];
 ```
 
-The optional measure part can be used to define a new type in terms of previously defined types. Note that this composite type cannot be used with non-`number` types.
+The optional measure part can be used to define a new types in terms of previously defined types. Note that this composite type cannot be used with non-`number` types.
 
 **Examples:**
 
 ```typescript
-declare type m;
-declare type s;
-declare type a = m/s^2;
-declare type email;
+type m extends number;
+type s extends number;
+type a = m/s^2;
+type email extends string;
 ```
 
 Note: The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
@@ -33,9 +33,9 @@ Note: The caret symbol does not denote a bitwise XOR operator, but rather an exp
 ## Use with Number
 
 ```typescript
-declare type m;
-declare type s;
-declare type a = m/s^2;
+type m extends number;
+type s extends number;
+type a = m/s^2;
 
 var acceleration = 12<a>,
     time         = 10<s>;
@@ -55,7 +55,7 @@ acceleration += 12<m/s^2> * 10<s>; // compile error -- Cannot convert number<m/s
 ## Use with String, Boolean, and Date
 
 ```typescript
-declare type email;
+type email extends string;
 
 function sendEmail(email: string<email>, message : string) {
     // send the email in here
@@ -66,23 +66,23 @@ sendEmail(myEmail, "Hello!");           // valid
 sendEmail("some string", "Hello!");     // compile error -- Cannot convert string to string<email>
 ```
 
-The following is invalid with non-number types:
+The following is invalid:
 
 ```typescript
-declare type m;
-declare type s;
-declare type a = m/s^2;
+type m extends number;
+type s extends number;
+type a = m/s^2;
 
-var myString : string<a>;   // compile error -- Cannot use composite types with non-number types
+var myString : string<a>;   // compile error -- Cannot use number types with a string
 ```
 
 ## Additional Cases
 
 ```typescript
-declare type m;
-declare type email;
-declare type startDate;
-declare type flag;
+type m extends number;
+type email extends string;
+type startDate extends Date;
+type flag extends boolean;
 
 var num    = new Number<m>(),
     str    = new String<email>(),
@@ -92,9 +92,10 @@ var num    = new Number<m>(),
 
 ## Additional Considerations
 
-It might be beneficial to have a type constraint on these defined types. For example:
+The defintion statement could also be like one of the following (or a combination of):
 
 ```typescript
+type string<email>;
 declare type email : string;
 ```
 
