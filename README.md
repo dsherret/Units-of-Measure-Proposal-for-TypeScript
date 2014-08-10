@@ -7,101 +7,147 @@ Units of Measure: Proposal for TypeScript
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on floating point and signed integer values.
 
-TypeScript could benefit from a similar units of measure feature and expand to include tiny type support for `string`, `boolean`, and `date` objects. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
+TypeScript could benefit from a similar units of measure feature. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
 
-## Defining Type Annotations
+## Defining Units of Measure
 
-Type annotations are defined as such:
+Units of measure are defined as such:
 
 ```typescript
-type <annotation-name> [extends <type-name>] [ = measure ];
+unit <unit-name> [ = unit ];
 ```
 
-The optional measure part can be used to define a new types in terms of previously defined types. Note that this composite type cannot be used with non-`number` types.
+The optional unit part can be used to define a new unit in terms of previously defined units. 
 
-**Examples:**
+The `<unit-name>` is unique so there cannot be any other types or variables defined with the same name within the unit's scope. For example, the following would not be valid:
 
 ```typescript
-type m extends number;
-type s extends number;
-type a = m/s^2;
-type email extends string;
+var m = 10;
+
+unit m; // error
+```
+
+### Example Definitions
+
+```typescript
+unit m;
+unit s;
+unit a = m/s^2;
 ```
 
 Note: The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
 
-## Use with Number
+### Circular Definitions
+
+Circular definitions are NOT allowed. For example:
 
 ```typescript
-type m extends number;
-type s extends number;
-type a = m/s^2;
+unit a = b / c;
+unit b = a * c;
+unit c = b / a;
+```
+
+## Using units
+
+```typescript
+unit m;
+unit s;
+unit a = m/s^2;
 
 var acceleration = 12<a>,
-    time         = 10<s>;
+    time         = new Number(10)<s>;
 
 var distance = 1/2 * acceleration * time * time; // valid -- implicitly typed to number<m>
 var avgSpeed = distance / time;                  // valid -- implicitly typed to number<m/s>
 
 time += 5<s>;     // valid
-time += 5;        // compile error -- Cannot convert number to number<s>
-time += distance; // compile error -- Cannot convert number<m> to number<s>
+time += 5;        // error -- cannot convert number to number<s>
+time += distance; // error -- cannot convert number<m> to number<s>
 
 acceleration += 12<m/s^2>;         // valid
 acceleration += 10<a>;             // valid
-acceleration += 12<m/s^2> * 10<s>; // compile error -- Cannot convert number<m/s> to number<a>
+acceleration += 12<m/s^2> * 10<s>; // error -- cannot convert number<m/s> to number<a>
 ```
 
-## Use with String, Boolean, and Date
+### Use With Non-Unit of Measure Number Types
+
+Sometimes legacy code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
 
 ```typescript
-type email extends string;
+unit s;
 
-function sendEmail(email: string<email>, message : string) {
-    // send the email in here
+var time = 3<s>,
+    num  = 4;
+    
+time = time + num;    // error -- cannot add number to number<s>
+time = time + num<s>; // valid
+```
+
+## Dimensionless Unit
+
+A dimensionless unit is a unit of measure defined as `number<1>`.
+
+```typescript
+var ratio = 10<s> / 20<s>, // implicitly typed to number<1>
+    time : number<s>;
+
+time = 2<s> * ratio;
+time *= ratio;
+time = 2<s> + ratio; // error, cannot add number<1> to number<s>
+time = ratio;        // error, cannot assign number<1> to number<s>
+```
+
+## Math Library
+
+Units of measure should work well with the current existing [Math object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
+
+Some examples:
+
+```typescript
+Math.min(0<s>, 4<m>);           // error, cannot mix number<s> with number<m>
+
+var volume = Math.pow(2<m>, 3); // volume is implicitly typed to number<m^3>
+```
+
+## Outstanding Questions
+
+As discussed in [this thread](https://github.com/Microsoft/TypeScript/issues/364#issuecomment-51720786).
+
+### 1. How does units of measure work when used across modules?
+
+#### Suggestion #1
+
+> A measure is in the scope of a module. Outside the module it is not visible. When using external modules, you should create measures in a .d.ts file. 
+
+-- [ivogabe](https://github.com/Microsoft/TypeScript/issues/364#issuecomment-51711138)
+
+#### Suggestion #2
+
+> Just throwing out some ideas here, but maybe measures could be imported in order to prevent conflicts between libraries... so you would have to write something like `import unit m = MyMeasureModule.m;` at the top of each file you want to use it. Then when you're writing a measure in a module you would do this:
+
+```typescript
+module MyModule {
+    export unit m; // or maybe these could also be defined at the class level
+    export unit s;
+
+    export class MyClass {
+        myMethod() : number<m/s> {
+            return 20<m/s>;
+        }
+    }
 }
-
-var myEmail = "david@email.com"<email>;
-sendEmail(myEmail, "Hello!");           // valid
-sendEmail("some string", "Hello!");     // compile error -- Cannot convert string to string<email>
 ```
 
-The following is invalid:
+> That could help prevent conflicts because you could do `import unit m = MyMeasureModule.m` and `import unit meters = SomeOtherLibrary.m`, but it wouldn't be so nice when a conflict occurs. Additionally, it wouldn't be that nice to have to rewrite measure statements at the top of each file you want to use them in, but I guess it's not too bad (think of it like the necessity of writing using statements in c#).
+
+-- [dsherret](https://github.com/Microsoft/TypeScript/issues/364#issuecomment-51716846)
+
+
+### 2. How can a function return a new combination of the units of measure used?
+
+For example, how would the `Math.pow` function be defined?
 
 ```typescript
-type m extends number;
-type s extends number;
-type a = m/s^2;
-
-var myString : string<a>;   // compile error -- Cannot use number types with a string
+pow<u ^ pow>(base : number<u>, pow : number) {
+}
 ```
-
-## Additional Cases
-
-```typescript
-type m extends number;
-type email extends string;
-type startDate extends Date;
-type flag extends boolean;
-
-var num    = new Number<m>(),
-    str    = new String<email>(),
-    date   = new Date<startDate>(),
-    b      = new Boolean<flag>();
-```
-
-## Additional Considerations
-
-The defintion statement could also be like one of the following (or a combination of):
-
-```typescript
-type string<email>;
-declare type email : string;
-```
-
-## Supported Types
-
-* String
-* Number
-* Boolean
-* Date
