@@ -148,5 +148,15 @@ module MyModule {
 For example, how would the `Math.pow` function be defined?
 
 ```
-pow<u ^ pow>(base : number<u>, pow : number); // ???
+pow<u>(base : number<u>, pow : number) : number<u ^ pow> {
+    // other code here
+}
 ```
+
+Maybe:
+
+```
+// times return type is number<u * t>
+times<u, t>(firstNumber : number<u>, secondNumber : number<t>) {
+    return firstNumber * secondNumber;
+}
