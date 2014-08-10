@@ -148,5 +148,5 @@ module MyModule {
 For example, how would the `Math.pow` function be defined?
 
 ```
-pow<u ^ pow>(base : number<u>, pow : number);
+pow<u ^ pow>(base : number<u>, pow : number); // ???
 ```
