@@ -13,7 +13,7 @@ TypeScript could benefit from a similar units of measure feature. Such a feature
 
 Units of measure are defined as such:
 
-```typescript
+```
 unit <unit-name> [ = unit ];
 ```
 
@@ -21,7 +21,7 @@ The optional unit part can be used to define a new unit in terms of previously d
 
 The `<unit-name>` is unique so there cannot be any other types or variables defined with the same name within the unit's scope. For example, the following would not be valid:
 
-```typescript
+```
 var m = 10;
 
 unit m; // error
@@ -29,7 +29,7 @@ unit m; // error
 
 ### Example Definitions
 
-```typescript
+```
 unit m;
 unit s;
 unit a = m/s^2;
@@ -49,7 +49,7 @@ unit c = b / a;
 
 ## Using units
 
-```typescript
+```
 unit m;
 unit s;
 unit a = m/s^2;
@@ -73,7 +73,7 @@ acceleration += 12<m/s^2> * 10<s>; // error -- cannot convert number<m/s> to num
 
 Sometimes legacy code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
 
-```typescript
+```
 unit s;
 
 var time = 3<s>,
@@ -87,7 +87,7 @@ time = time + num<s>; // valid
 
 A dimensionless unit is a unit of measure defined as `number<1>`.
 
-```typescript
+```
 var ratio = 10<s> / 20<s>, // implicitly typed to number<1>
     time : number<s>;
 
@@ -103,7 +103,7 @@ Units of measure should work well with the current existing [Math object](https:
 
 Some examples:
 
-```typescript
+```
 Math.min(0<s>, 4<m>);           // error, cannot mix number<s> with number<m>
 
 var volume = Math.pow(2<m>, 3); // volume is implicitly typed to number<m^3>
@@ -125,7 +125,7 @@ As discussed in [this thread](https://github.com/Microsoft/TypeScript/issues/364
 
 > Just throwing out some ideas here, but maybe measures could be imported in order to prevent conflicts between libraries... so you would have to write something like `import unit m = MyMeasureModule.m;` at the top of each file you want to use it. Then when you're writing a measure in a module you would do this:
 
-```typescript
+```
 module MyModule {
     export unit m; // or maybe these could also be defined at the class level
     export unit s;
@@ -147,7 +147,6 @@ module MyModule {
 
 For example, how would the `Math.pow` function be defined?
 
-```typescript
-pow<u ^ pow>(base : number<u>, pow : number) {
-}
+```
+pow<u ^ pow>(base : number<u>, pow : number);
 ```
