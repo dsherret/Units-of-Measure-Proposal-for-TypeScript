@@ -47,7 +47,7 @@ unit b = a * c;
 unit c = b / a;
 ```
 
-## Using units
+## Using Units
 
 ```
 unit m;
