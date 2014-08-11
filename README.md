@@ -148,7 +148,7 @@ module MyModule {
 
 Side note: Maybe this question should be thrown out.
 
-For example, how would the `Math.pow` function be defined if we want it to implicitly want to raise the power of a unit. Such as in the case `var area = Math.pow(2<m>, 2);` where area is implicitly typed to `number<m^2>`. Take note that such a case could only occur when passing in a literal.
+For example, how would the `Math.pow` function be defined if we want it to implicitly want to raise the power of a unit. Such as in the case `var area = Math.pow(2<m>, 2);` where area is implicitly typed to `number<m^2>`. Take note that such a case could only occur when passing in a number literal for the power.
 
 ```
 pow<u>(base : number<u>, pow : number) : number<u ^ pow> {
