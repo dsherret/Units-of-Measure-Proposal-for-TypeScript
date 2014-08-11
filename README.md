@@ -43,8 +43,8 @@ Circular definitions are NOT allowed. For example:
 
 ```typescript
 unit a = b / c;
-unit b = a * c;
-unit c = b / a;
+unit b = a * c; // error
+unit c = b / a; // error
 ```
 
 ## Using Units
