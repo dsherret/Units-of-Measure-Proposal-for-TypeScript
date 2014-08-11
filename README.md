@@ -104,9 +104,10 @@ Units of measure should work well with the current existing [Math object](https:
 Some examples:
 
 ```
-Math.min(0<s>, 4<m>);           // error, cannot mix number<s> with number<m>
+Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m>
 
-var volume = Math.pow(2<m>, 3); // volume is implicitly typed to number<m^3>
+var volume = Math.pow(2<m>, 3)<m^3>;
+var length = Math.sqrt(4<m^2>)<m>;
 ```
 
 ## Outstanding Questions
@@ -145,7 +146,9 @@ module MyModule {
 
 ### 2. How can a function return a new combination of the units of measure used?
 
-For example, how would the `Math.pow` function be defined?
+Side note: Maybe this question should be thrown out.
+
+For example, how would the `Math.pow` function be defined if we want it to implicitly want to raise the power of a unit. Such as in the case `var area = Math.pow(2<m>, 2);` where area is implicitly typed to `number<m^2>`. Take note that such a case could only occur when passing in a literal.
 
 ```
 pow<u>(base : number<u>, pow : number) : number<u ^ pow> {
@@ -160,3 +163,6 @@ Maybe:
 times<u, t>(firstNumber : number<u>, secondNumber : number<t>) {
     return firstNumber * secondNumber;
 }
+```
+
+How would you take the nth root of a unit of measure in this case?
