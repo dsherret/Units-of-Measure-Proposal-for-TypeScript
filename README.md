@@ -47,7 +47,22 @@ unit b = a * c; // error
 unit c = b / a; // error
 ```
 
-## Using Units
+## Use with Number
+
+Units of measure can be defined on a number type in any of the following ways:
+
+```
+unit m;
+
+// 1. Explicitly
+var distance : number<m> = 12<m>;
+// 2. Implictly
+var distance = 12<m>;
+// 3. Using Number class (can be done implicitly or explicitly)
+var distance = new Number(10)<s>;
+```
+
+## Detailed Full Example
 
 ```
 unit m;
@@ -55,7 +70,7 @@ unit s;
 unit a = m/s^2;
 
 var acceleration = 12<a>,
-    time         = new Number(10)<s>;
+    time         = 10<s>;
 
 var distance = 1/2 * acceleration * time * time; // valid -- implicitly typed to number<m>
 var avgSpeed = distance / time;                  // valid -- implicitly typed to number<m/s>
@@ -71,16 +86,16 @@ acceleration += 12<m/s^2> * 10<s>; // error -- cannot convert number<m/s> to num
 
 ### Use With Non-Unit of Measure Number Types
 
-Sometimes legacy code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
+Sometimes previously written code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
 
 ```
 unit s;
 
-var time = 3<s>,
-    num  = 4;
+var time     = 3<s>,
+    seconds  = MyOldLibrary.getSeconds(); // getSeconds returns a number without a unit of measure
     
-time = time + num;    // error -- cannot add number to number<s>
-time = time + num<s>; // valid
+time += seconds;    // error -- cannot add number to number<s>
+time += seconds<s>; // valid
 ```
 
 ## Dimensionless Unit
