@@ -91,11 +91,10 @@ Sometimes previously written code or external libraries will return number types
 ```
 unit s;
 
-var time     = 3<s>,
-    seconds  = MyOldLibrary.getSeconds(); // getSeconds returns a number without a unit of measure
+var time = 3<s>;
     
-time += seconds;    // error -- cannot add number to number<s>
-time += seconds<s>; // valid
+time += MyOldLibrary.getSeconds();    // error -- cannot add number to number<s>
+time += MyOldLibrary.getSeconds()<s>; // valid
 ```
 
 ## Dimensionless Unit
