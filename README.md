@@ -111,6 +111,25 @@ time = 2<s> + ratio; // error, cannot add number<1> to number<s>
 time = ratio;        // error, cannot assign number<1> to number<s>
 ```
 
+## Compilation
+
+The units of measure feature will not create any runtime overhead. For example:
+
+```
+unit cm;
+unit m;
+
+var metersToCentimeters = 100<cm/m>,
+    length : number<cm> = 20<m> * metersToCentimeters;
+```
+
+Compiles to the following JavaScript:
+
+```javascript
+var metersToCentimeters = 100,
+    length = 20 * metersToCentimeters;
+```
+
 ## Math Library
 
 Units of measure should work well with the current existing [Math object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
