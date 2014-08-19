@@ -143,41 +143,34 @@ var volume = Math.pow(2<m>, 3)<m^3>;
 var length = Math.sqrt(4<m^2>)<m>;
 ```
 
+## Modules
+
+Units of measure can be defined on the module level and exported like such:
+
+```
+module MyModule {
+    export unit m;
+}
+```
+
+Then used in other parts of the application by writing:
+
+```
+unit m = MyModule.m;
+```
+
+Such a feature would handle conflicts well as a developer can rename a unit of measure by writing:
+
+```
+unit meters = MyModule.m;
+```
+
 ## Outstanding Questions
 
 As discussed in [this thread](https://github.com/Microsoft/TypeScript/issues/364#issuecomment-51720786).
 
-### 1. How does units of measure work when used across modules?
 
-#### Suggestion #1
-
-> A measure is in the scope of a module. Outside the module it is not visible. When using external modules, you should create measures in a .d.ts file. 
-
--- [ivogabe](https://github.com/Microsoft/TypeScript/issues/364#issuecomment-51711138)
-
-#### Suggestion #2
-
-> Just throwing out some ideas here, but maybe measures could be imported in order to prevent conflicts between libraries... so you would have to write something like `import unit m = MyMeasureModule.m;` at the top of each file you want to use it. Then when you're writing a measure in a module you would do this:
-
-```
-module MyModule {
-    export unit m; // or maybe these could also be defined at the class level
-    export unit s;
-
-    export class MyClass {
-        myMethod() : number<m/s> {
-            return 20<m/s>;
-        }
-    }
-}
-```
-
-> That could help prevent conflicts because you could do `import unit m = MyMeasureModule.m` and `import unit meters = SomeOtherLibrary.m`, but it wouldn't be so nice when a conflict occurs. Additionally, it wouldn't be that nice to have to rewrite measure statements at the top of each file you want to use them in, but I guess it's not too bad (think of it like the necessity of writing using statements in c#).
-
--- [dsherret](https://github.com/Microsoft/TypeScript/issues/364#issuecomment-51716846)
-
-
-### 2. How can a function return a new combination of the units of measure used?
+### 1. How can a function return a new combination of the units of measure used?
 
 Side note: Maybe this question should be thrown out.
 
