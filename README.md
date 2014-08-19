@@ -149,7 +149,7 @@ unit m = MyModule.m;
 Such a feature would handle conflicts well as a developer can rename a unit of measure by writing:
 
 ```
-unit meters = MyModule.m;
+unit meter = MyModule.m;
 ```
 
 ## Math Library
