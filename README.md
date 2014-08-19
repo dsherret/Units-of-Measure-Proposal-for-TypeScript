@@ -130,19 +130,6 @@ var metersToCentimeters = 100,
     length = 20 * metersToCentimeters;
 ```
 
-## Math Library
-
-Units of measure should work well with the current existing [Math object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
-
-Some examples:
-
-```
-Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m>
-
-var volume = Math.pow(2<m>, 3)<m^3>;
-var length = Math.sqrt(4<m^2>)<m>;
-```
-
 ## Modules
 
 Units of measure can be defined on the module level and exported like such:
@@ -163,6 +150,19 @@ Such a feature would handle conflicts well as a developer can rename a unit of m
 
 ```
 unit meters = MyModule.m;
+```
+
+## Math Library
+
+Units of measure should work well with the current existing [Math object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
+
+Some examples:
+
+```
+Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m>
+
+var volume = Math.pow(2<m>, 3)<m^3>;
+var length = Math.sqrt(4<m^2>)<m>;
 ```
 
 ## Outstanding Questions
