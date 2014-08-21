@@ -133,6 +133,10 @@ Such a feature would handle conflicts well as a developer can rename a unit of m
 unit meter = MyModule.m;
 ```
 
+## Definition File
+
+Units of measure can be defined in TypeScript definition files ( `.d.ts`) and can be used by any file that references it. Defining units of measure in a defition file is done just the same as defining one in a `.ts` file.
+
 ## Compilation
 
 The units of measure feature will not create any runtime overhead. For example:
