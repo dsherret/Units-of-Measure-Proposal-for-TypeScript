@@ -127,7 +127,7 @@ Then used in other parts of the application by writing:
 unit m = MyModule.m;
 ```
 
-Such a feature would handle conflicts well as a developer can rename a unit of measure by writing:
+Such a feature would handle conflicts well as a developer can alias a unit of measure by writing:
 
 ```
 unit meter = MyModule.m;
