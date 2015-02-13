@@ -5,9 +5,9 @@ Units of Measure: Proposal for TypeScript
 
 ## Overview
 
-Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on floating point and signed integer values.
+Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on numbers.
 
-TypeScript could benefit from a similar units of measure feature. Such a feature would add zero runtime overhead, increase type constraints, and help decrease programmer error.
+TypeScript could benefit from a similar feature that would add zero runtime overhead, increase type constraints, and help decrease programmer error. The feature should prefer explicity.
 
 ## Defining Units of Measure
 
@@ -35,16 +35,17 @@ unit s;
 unit a = m/s^2;
 ```
 
-Note: The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s`.
+The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s` (`^` takes higher presedence than `/`).
+
+Additionally, units of measure can be defined in any order. For example, `a` in the example above could have been defined before `m` or `s`.
 
 ### Circular Definitions
 
 Circular definitions are NOT allowed. For example:
 
 ```typescript
-unit a = b / c;
-unit b = a * c; // error
-unit c = b / a; // error
+unit a = b;
+unit b = a; // error
 ```
 
 ## Use with Number
@@ -75,9 +76,13 @@ var acceleration = 12<a>,
 var distance = 1/2 * acceleration * time * time; // valid -- implicitly typed to number<m>
 var avgSpeed = distance / time;                  // valid -- implicitly typed to number<m/s>
 
-time += 5<s>;     // valid
-time += 5;        // error -- cannot convert number to number<s>
-time += distance; // error -- cannot convert number<m> to number<s>
+time += 5<s>;         // valid
+time += 5;            // error -- cannot convert number to number<s>
+time += distance;     // error -- cannot convert number<m> to number<s>
+
+// The following should be thought out more. Maybe this should be valid?
+// Or maybe require something like: (<number>distance)<s>
+time += distance<s>;  // valid
 
 acceleration += 12<m/s^2>;         // valid
 acceleration += 10<a>;             // valid
@@ -111,6 +116,10 @@ time = 2<s> + ratio; // error, cannot add number<1> to number<s>
 time = ratio;        // error, cannot assign number<1> to number<s>
 ```
 
+## Scope
+
+A unit of measure is only visible within the file it is defined or, if defined in a module, within the module it was defined. They can only be visible in other files by exporting them from a module.
+
 ## Modules
 
 Units of measure can be defined on the module level and exported like such:
@@ -121,17 +130,29 @@ module MyModule {
 }
 ```
 
-Then used in other parts of the application by writing:
+Then used as such in other parts of the application:
+
+```
+var meters = 14<MyModule.m>;
+```
+
+## Aliasing
+
+Sometimes aliasing is desired. This can be done by writing:
 
 ```
 unit m = MyModule.m;
 ```
 
-Such a feature would handle conflicts well as a developer can alias a unit of measure by writing:
+Or even:
 
 ```
 unit meter = MyModule.m;
 ```
+
+TODO: Consider linking multiple units of measure together. For example, if an external library has a definition for meters and another external library has a definition for meters, then consider a way of linking these two definitions together.
+
+TODO: Consider having a warning when two different units of measure refer to the same thing? For example, if defining both `unit m = MyModule.m` and `unit meter = MyModule.m` are defined in the same scope then have a warning on `meter` that it's a duplicate definition of `m`.
 
 ## Definition File
 
