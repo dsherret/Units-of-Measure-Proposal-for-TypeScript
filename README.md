@@ -152,7 +152,7 @@ unit meter = MyModule.m;
 
 TODO: Consider linking multiple units of measure together. For example, if an external library has a definition for meters and another external library has a definition for meters, then consider a way of linking these two definitions together.
 
-TODO: Consider having a warning when two different units of measure refer to the same thing? For example, if defining both `unit m = MyModule.m` and `unit meter = MyModule.m` are defined in the same scope then have a warning on `meter` that it's a duplicate definition of `m`.
+TODO: Consider having a warning when two different units of measure refer to the same thing? For example, if defining both `unit m = MyModule.m` and `unit meter = MyModule.m` in the same scope have a warning on `meter` that it's a duplicate definition of `m`.
 
 ## Definition File
 
