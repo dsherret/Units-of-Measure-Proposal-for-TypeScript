@@ -19,7 +19,7 @@ unit <unit-name> [ = unit ];
 
 The optional unit part can be used to define a new unit in terms of previously defined units. 
 
-The `<unit-name>` is unique so there cannot be any other types or variables defined with the same name within the unit's scope. For example, the following would not be valid:
+The `<unit-name>` is unique so there cannot be any other types or variables defined with the same name within the unit's scope (EDIT: Needs clarification and reason). For example, the following would not be valid:
 
 ```
 var m = 10;
@@ -118,7 +118,7 @@ time = ratio;        // error, cannot assign number<1> to number<s>
 
 ## Scope
 
-A unit of measure is only visible within the file it is defined or, if defined in a module, within the module it was defined. They can only be visible in other files by exporting them from a module.
+A unit of measure is only visible within the file it is defined or, if defined in a module, within the module it was defined. They can only be visible in other files by exporting them from a module (EDIT: maybe? Needs more thought and input from other people on how this should be done).
 
 ## Modules
 
@@ -156,7 +156,7 @@ TODO: Consider having a warning when two different units of measure refer to the
 
 ## Definition File
 
-Units of measure can be defined in TypeScript definition files ( `.d.ts`) and can be used by any file that references it. Defining units of measure in a defition file is done just the same as defining one in a `.ts` file.
+Units of measure can be defined in TypeScript definition files ( `.d.ts`) and can be used by any file that references it. Defining units of measure in a definition file is done just the same as defining one in a `.ts` file.
 
 ## Compilation
 
