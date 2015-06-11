@@ -3,6 +3,8 @@ Units of Measure: Proposal for TypeScript
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
+[Read the issue](https://github.com/Microsoft/TypeScript/issues/364)
+
 ## Overview
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on numbers.
@@ -59,7 +61,7 @@ unit m;
 var distance : number<m> = 12<m>;
 // 2. Implictly
 var distance = 12<m>;
-// 3. Using Number class (can be done implicitly or explicitly)
+// 3. Using Number class
 var distance = new Number(10)<s>;
 ```
 
@@ -80,9 +82,8 @@ time += 5<s>;         // valid
 time += 5;            // error -- cannot convert number to number<s>
 time += distance;     // error -- cannot convert number<m> to number<s>
 
-// The following should be thought out more. Maybe this should be valid?
-// Or maybe require something like: (<number>distance)<s>
-time += distance<s>;  // valid
+// Convert to another unit. The following should be thought out more:
+time += (<number>distance)<s>;  // valid
 
 acceleration += 12<m/s^2>;         // valid
 acceleration += 10<a>;             // valid
@@ -184,7 +185,7 @@ Units of measure should work well with the current existing [Math object](https:
 Some examples:
 
 ```
-Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m>
+Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m> -- todo: How would this be defined in the definition file?
 
 var volume = Math.pow(2<m>, 3)<m^3>;
 var length = Math.sqrt(4<m^2>)<m>;
