@@ -9,14 +9,14 @@ Units of Measure: Proposal for TypeScript
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on numbers.
 
-TypeScript could benefit from a similar feature that would add zero runtime overhead, increase type constraints, and help decrease programmer error. The feature should prefer explicity.
+TypeScript could benefit from a similar feature that would add zero runtime overhead, increase type constraints, and help decrease programmer error when doing mathematical calculations that involve units. The feature should prefer explicity.
 
 ## Defining Units of Measure
 
-Units of measure are defined as such:
+Units of measure should probably use syntax similar to type aliases (#957). More discussion is needed on this, but for the purpose of this document it will use the following syntax:
 
 ```
-unit <unit-name> [ = unit ];
+type <unit-name> [ = unit ];
 ```
 
 The optional unit part can be used to define a new unit in terms of previously defined units. 
@@ -24,20 +24,20 @@ The optional unit part can be used to define a new unit in terms of previously d
 The `<unit-name>` is unique so there cannot be any other types or variables defined with the same name within the unit's scope (EDIT: Needs clarification and reason). For example, the following would not be valid:
 
 ```
-var m = 10;
+const m = 10;
 
-unit m; // error
+type m; // error
 ```
 
 ### Example Definitions
 
 ```
-unit m;
-unit s;
-unit a = m/s^2;
+type m;
+type s;
+type a = m/s^2;
 ```
 
-The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s` (`^` takes higher presedence than `/`).
+The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s` (`^` takes higher precedence than `/`).
 
 Additionally, units of measure can be defined in any order. For example, `a` in the example above could have been defined before `m` or `s`.
 
@@ -46,8 +46,8 @@ Additionally, units of measure can be defined in any order. For example, `a` in 
 Circular definitions are NOT allowed. For example:
 
 ```typescript
-unit a = b;
-unit b = a; // error
+type a = b;
+type b = a; // error
 ```
 
 ## Use with Number
@@ -55,35 +55,37 @@ unit b = a; // error
 Units of measure can be defined on a number type in any of the following ways:
 
 ```
-unit m;
+type m;
 
 // 1. Explicitly
-var distance : number<m> = 12<m>;
+let distance: number<m> = 12<m>;
 // 2. Implictly
-var distance = 12<m>;
+let distance = 12<m>;
 // 3. Using Number class
-var distance = new Number(10)<s>;
+let distance = new Number(10)<s>;
 ```
+
+TODO: Maybe we shouldn't use the `<m>` syntax because it might conflict with jsx files. Additionally, this current syntax seems weird to be doing `type m` then later `number<m>`. We really need to think this out more.
 
 ## Detailed Full Example
 
 ```
-unit m;
-unit s;
-unit a = m/s^2;
+type m;
+type s;
+type a = m/s^2;
 
-var acceleration = 12<a>,
+let acceleration = 12<a>,
     time         = 10<s>;
 
-var distance = 1/2 * acceleration * time * time; // valid -- implicitly typed to number<m>
-var avgSpeed = distance / time;                  // valid -- implicitly typed to number<m/s>
+let distance = 1/2 * acceleration * time * time; // valid -- implicitly typed to number<m>
+let avgSpeed = distance / time;                  // valid -- implicitly typed to number<m/s>
 
 time += 5<s>;         // valid
 time += 5;            // error -- cannot convert number to number<s>
 time += distance;     // error -- cannot convert number<m> to number<s>
 
 // Convert to another unit. The following should be thought out more:
-time += (<number>distance)<s>;  // valid
+time += (distance as number)<s>;  // valid
 
 acceleration += 12<m/s^2>;         // valid
 acceleration += 10<a>;             // valid
@@ -95,9 +97,9 @@ acceleration += 12<m/s^2> * 10<s>; // error -- cannot convert number<m/s> to num
 Sometimes previously written code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
 
 ```
-unit s;
+type s;
 
-var time = 3<s>;
+let time = 3<s>;
     
 time += MyOldLibrary.getSeconds();    // error -- cannot add number to number<s>
 time += MyOldLibrary.getSeconds()<s>; // valid
@@ -108,8 +110,8 @@ time += MyOldLibrary.getSeconds()<s>; // valid
 A dimensionless unit is a unit of measure defined as `number<1>`.
 
 ```
-var ratio = 10<s> / 20<s>, // implicitly typed to number<1>
-    time : number<s>;
+let ratio = 10<s> / 20<s>, // implicitly typed to number<1>
+    time: number<s>;
 
 time = 2<s> * ratio;
 time *= ratio;
@@ -121,20 +123,35 @@ time = ratio;        // error, cannot assign number<1> to number<s>
 
 A unit of measure is only visible within the file it is defined or, if defined in a module, within the module it was defined. They can only be visible in other files by exporting them from a module (EDIT: maybe? Needs more thought and input from other people on how this should be done).
 
-## Modules
+## Internal Modules
 
 Units of measure can be defined on the module level and exported like such:
 
 ```
 module MyModule {
-    export unit m;
+    export type m;
 }
 ```
 
 Then used as such in other parts of the application:
 
 ```
-var meters = 14<MyModule.m>;
+let meters = 14<MyModule.m>;
+```
+
+## External Modules
+
+Example:
+
+```
+// units.ts
+export type m;
+export type s;
+
+// other-file.ts
+import units = require("./units");
+
+let meters = 14<units.m>;
 ```
 
 ## Aliasing
@@ -142,13 +159,13 @@ var meters = 14<MyModule.m>;
 Sometimes aliasing is desired. This can be done by writing:
 
 ```
-unit m = MyModule.m;
+type m = MyModule.m;
 ```
 
 Or even:
 
 ```
-unit meter = MyModule.m;
+type meter = MyModule.m;
 ```
 
 TODO: Consider linking multiple units of measure together. For example, if an external library has a definition for meters and another external library has a definition for meters, then consider a way of linking these two definitions together.
@@ -164,11 +181,11 @@ Units of measure can be defined in TypeScript definition files ( `.d.ts`) and ca
 The units of measure feature will not create any runtime overhead. For example:
 
 ```
-unit cm;
-unit m;
+type cm;
+type m;
 
-var metersToCentimeters = 100<cm/m>,
-    length : number<cm> = 20<m> * metersToCentimeters;
+let metersToCentimeters = 100<cm/m>,
+    length: number<cm> = 20<m> * metersToCentimeters;
 ```
 
 Compiles to the following JavaScript:
@@ -185,8 +202,8 @@ Units of measure should work well with the current existing [Math object](https:
 Some examples:
 
 ```
-Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m> -- todo: How would this be defined in the definition file?
+Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m> -- todo: How would this constraint be defined?
 
-var volume = Math.pow(2<m>, 3)<m^3>;
-var length = Math.sqrt(4<m^2>)<m>;
+let volume = Math.pow(2<m>, 3)<m^3>;
+let length = Math.sqrt(4<m^2>)<m>;
 ```
