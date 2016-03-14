@@ -9,7 +9,7 @@ Units of Measure: Proposal for TypeScript
 
 Units of measure is a useful [F# feature](http://msdn.microsoft.com/en-us/library/dd233243.aspx) that provides the optional ability to create tighter constraints on numbers.
 
-TypeScript could benefit from a similar feature that would add zero runtime overhead, increase type constraints, and help decrease programmer error when doing mathematical calculations that involve units. The feature should prefer explicity.
+TypeScript could benefit from a similar feature that would add **zero runtime overhead**, increase type constraints, and help decrease programmer error when doing mathematical calculations that involve units. The feature should prefer explicity.
 
 ## Defining Units of Measure
 
@@ -34,12 +34,10 @@ type m; // error
 ```
 type m;
 type s;
-type a = m/s^2;
+type a = m / s**2;
 ```
 
-The caret symbol does not denote a bitwise XOR operator, but rather an exponent. In this case, `m/s^2` is equivalent to `m/s/s` (`^` takes higher precedence than `/`).
-
-Additionally, units of measure can be defined in any order. For example, `a` in the example above could have been defined before `m` or `s`.
+Units of measure can be defined in any order. For example, `a` in the example above could have been defined before `m` or `s`.
 
 ### Circular Definitions
 
@@ -72,12 +70,12 @@ TODO: Maybe we shouldn't use the `<m>` syntax because it might conflict with jsx
 ```
 type m;
 type s;
-type a = m/s^2;
+type a = m / s**2;
 
 let acceleration = 12<a>,
     time         = 10<s>;
 
-let distance = 1/2 * acceleration * time * time; // valid -- implicitly typed to number<m>
+let distance = 1/2 * acceleration * (time ** 2); // valid -- implicitly typed to number<m>
 let avgSpeed = distance / time;                  // valid -- implicitly typed to number<m/s>
 
 time += 5<s>;         // valid
@@ -87,9 +85,9 @@ time += distance;     // error -- cannot convert number<m> to number<s>
 // Convert to another unit. The following should be thought out more:
 time += (distance as number)<s>;  // valid
 
-acceleration += 12<m/s^2>;         // valid
+acceleration += 12<m / s**2>;         // valid
 acceleration += 10<a>;             // valid
-acceleration += 12<m/s^2> * 10<s>; // error -- cannot convert number<m/s> to number<a>
+acceleration += 12<m / s**2> * 10<s>; // error -- cannot convert number<m/s> to number<a>
 ```
 
 ### Use With Non-Unit of Measure Number Types
@@ -121,56 +119,13 @@ time = ratio;        // error, cannot assign number<1> to number<s>
 
 ## Scope
 
-A unit of measure is only visible within the file it is defined or, if defined in a module, within the module it was defined. They can only be visible in other files by exporting them from a module (EDIT: maybe? Needs more thought and input from other people on how this should be done).
+Works the same way as `type`. 
 
-## Internal Modules
+## External and Internal Modules
 
-Units of measure can be defined on the module level and exported like such:
-
-```
-module MyModule {
-    export type m;
-}
-```
-
-Then used as such in other parts of the application:
-
-```
-let meters = 14<MyModule.m>;
-```
-
-## External Modules
-
-Example:
-
-```
-// units.ts
-export type m;
-export type s;
-
-// other-file.ts
-import units = require("./units");
-
-let meters = 14<units.m>;
-```
-
-## Aliasing
-
-Sometimes aliasing is desired. This can be done by writing:
-
-```
-type m = MyModule.m;
-```
-
-Or even:
-
-```
-type meter = MyModule.m;
-```
+Also works the same way as `type`.
 
 TODO: Consider linking multiple units of measure together. For example, if an external library has a definition for meters and another external library has a definition for meters, then consider a way of linking these two definitions together.
-
-TODO: Consider having a warning when two different units of measure refer to the same thing? For example, if defining both `unit m = MyModule.m` and `unit meter = MyModule.m` in the same scope have a warning on `meter` that it's a duplicate definition of `m`.
 
 ## Definition File
 
@@ -184,7 +139,7 @@ The units of measure feature will not create any runtime overhead. For example:
 type cm;
 type m;
 
-let metersToCentimeters = 100<cm/m>,
+let metersToCentimeters = 100<cm / m>,
     length: number<cm> = 20<m> * metersToCentimeters;
 ```
 
@@ -204,6 +159,6 @@ Some examples:
 ```
 Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m> -- todo: How would this constraint be defined?
 
-let volume = Math.pow(2<m>, 3)<m^3>;
+let volume = Math.pow(2<m>, 3)<m**3>;
 let length = Math.sqrt(4<m^2>)<m>;
 ```
