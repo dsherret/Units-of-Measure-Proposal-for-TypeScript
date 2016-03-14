@@ -21,14 +21,6 @@ type <unit-name> [ = unit ];
 
 The optional unit part can be used to define a new unit in terms of previously defined units. 
 
-The `<unit-name>` is unique so there cannot be any other types or variables defined with the same name within the unit's scope (EDIT: Needs clarification and reason). For example, the following would not be valid:
-
-```
-const m = 10;
-
-type m; // error
-```
-
 ### Example Definitions
 
 ```
