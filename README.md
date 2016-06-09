@@ -16,10 +16,10 @@ TypeScript could benefit from a similar feature that would add **zero runtime ov
 Units of measure should probably use syntax similar to type aliases (#957). More discussion is needed on this, but for the purpose of this document it will use the following syntax:
 
 ```typescript
-type measure <name> [ = unit ];
+type measure <name> [ = measure expression ];
 ```
 
-The optional unit part can be used to define a new unit in terms of previously defined units. 
+The optional measure expression part can be used to define a new measures in terms of previously defined measures.
 
 ### Example Definitions
 
