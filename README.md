@@ -16,7 +16,7 @@ TypeScript could benefit from a similar feature that would add **zero runtime ov
 Units of measure should probably use syntax similar to type aliases (#957). More discussion is needed on this, but for the purpose of this document it will use the following syntax:
 
 ```
-type <unit-name> [ = unit ];
+type measure <name> [ = unit ];
 ```
 
 The optional unit part can be used to define a new unit in terms of previously defined units. 
@@ -24,9 +24,9 @@ The optional unit part can be used to define a new unit in terms of previously d
 ### Example Definitions
 
 ```
-type m;
-type s;
-type a = m / s**2;
+type measure m;
+type measure s;
+type measure a = m / s**2;
 ```
 
 Units of measure can be defined in any order. For example, `a` in the example above could have been defined before `m` or `s`.
@@ -36,8 +36,8 @@ Units of measure can be defined in any order. For example, `a` in the example ab
 Circular definitions are NOT allowed. For example:
 
 ```typescript
-type a = b;
-type b = a; // error
+type measure a = b;
+type measure b = a; // error
 ```
 
 ## Use with Number
@@ -45,7 +45,7 @@ type b = a; // error
 Units of measure can be defined on a number type in any of the following ways:
 
 ```
-type m;
+type measure m;
 
 // 1. Explicitly
 let distance: number<m> = 12<m>;
@@ -55,14 +55,14 @@ let distance = 12<m>;
 let distance = new Number(10)<s>;
 ```
 
-TODO: Maybe we shouldn't use the `<m>` syntax because it might conflict with jsx files. Additionally, this current syntax seems weird to be doing `type m` then later `number<m>`. We really need to think this out more.
+TODO: Maybe we shouldn't use the `<m>` syntax because it might conflict with jsx files.
 
 ## Detailed Full Example
 
 ```
-type m;
-type s;
-type a = m / s**2;
+type measure m;
+type measure s;
+type measure a = m / s**2;
 
 let acceleration = 12<a>,
     time         = 10<s>;
@@ -78,7 +78,7 @@ time += distance;     // error -- cannot convert number<m> to number<s>
 time += (distance as number)<s>;  // valid
 
 acceleration += 12<m / s**2>;         // valid
-acceleration += 10<a>;             // valid
+acceleration += 10<a>;                // valid
 acceleration += 12<m / s**2> * 10<s>; // error -- cannot convert number<m/s> to number<a>
 ```
 
@@ -87,11 +87,11 @@ acceleration += 12<m / s**2> * 10<s>; // error -- cannot convert number<m/s> to 
 Sometimes previously written code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
 
 ```
-type s;
+type measure s;
 
 let time = 3<s>;
     
-time += MyOldLibrary.getSeconds();    // error -- cannot add number to number<s>
+time += MyOldLibrary.getSeconds();    // error -- type 'number' is not assignable to type 'number<s>'
 time += MyOldLibrary.getSeconds()<s>; // valid
 ```
 
@@ -117,7 +117,16 @@ Works the same way as `type`.
 
 Also works the same way as `type`.
 
-TODO: Consider linking multiple units of measure together. For example, if an external library has a definition for meters and another external library has a definition for meters, then consider a way of linking these two definitions together.
+In addition, if an external library has a definition for meters and another external library has a definition for meters, then they should be able to be linked together by doing:
+
+```typescript
+import {m as mathLibraryMeterType} from "my-math-library";
+import {m as mathOtherLibraryMeterType} from "my-other-math-library";
+    
+type measure m = mathLibraryMeterType | mathOtherLibraryMeterType;
+```
+    
+TODO: The above needs more thought though.
 
 ## Definition File
 
@@ -128,8 +137,8 @@ Units of measure can be defined in TypeScript definition files ( `.d.ts`) and ca
 The units of measure feature will not create any runtime overhead. For example:
 
 ```
-type cm;
-type m;
+type measure cm;
+type measure m;
 
 let metersToCentimeters = 100<cm / m>,
     length: number<cm> = 20<m> * metersToCentimeters;
