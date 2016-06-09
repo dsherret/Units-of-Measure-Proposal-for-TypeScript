@@ -15,7 +15,7 @@ TypeScript could benefit from a similar feature that would add **zero runtime ov
 
 Units of measure should probably use syntax similar to type aliases (#957). More discussion is needed on this, but for the purpose of this document it will use the following syntax:
 
-```
+```typescript
 type measure <name> [ = unit ];
 ```
 
@@ -23,7 +23,7 @@ The optional unit part can be used to define a new unit in terms of previously d
 
 ### Example Definitions
 
-```
+```typescript
 type measure m;
 type measure s;
 type measure a = m / s**2;
@@ -44,7 +44,7 @@ type measure b = a; // error
 
 Units of measure can be defined on a number type in any of the following ways:
 
-```
+```typescript
 type measure m;
 
 // 1. Explicitly
@@ -59,7 +59,7 @@ TODO: Maybe we shouldn't use the `<m>` syntax because it might conflict with jsx
 
 ## Detailed Full Example
 
-```
+```typescript
 type measure m;
 type measure s;
 type measure a = m / s**2;
@@ -86,7 +86,7 @@ acceleration += 12<m / s**2> * 10<s>; // error -- cannot convert number<m/s> to 
 
 Sometimes previously written code or external libraries will return number types without a unit of measure. In these cases, it is useful to allow the programmer to specify the unit like so:
 
-```
+```typescript
 type measure s;
 
 let time = 3<s>;
@@ -99,7 +99,7 @@ time += MyOldLibrary.getSeconds()<s>; // valid
 
 A dimensionless unit is a unit of measure defined as `number<1>`.
 
-```
+```typescript
 let ratio = 10<s> / 20<s>, // implicitly typed to number<1>
     time: number<s>;
 
@@ -136,7 +136,7 @@ Units of measure can be defined in TypeScript definition files ( `.d.ts`) and ca
 
 The units of measure feature will not create any runtime overhead. For example:
 
-```
+```typescript
 type measure cm;
 type measure m;
 
@@ -146,7 +146,7 @@ let metersToCentimeters = 100<cm / m>,
 
 Compiles to the following JavaScript:
 
-```javascript
+```typescript
 var metersToCentimeters = 100,
     length = 20 * metersToCentimeters;
 ```
@@ -157,7 +157,7 @@ Units of measure should work well with the current existing [Math object](https:
 
 Some examples:
 
-```
+```typescript
 Math.min(0<s>, 4<m>); // error, cannot mix number<s> with number<m> -- todo: How would this constraint be defined?
 
 let volume = Math.pow(2<m>, 3)<m**3>;
