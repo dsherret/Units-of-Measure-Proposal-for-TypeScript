@@ -119,7 +119,7 @@ Works the same way as `type`.
 
 Also works the same way as `type`.
 
-In addition, if an external library has a definition for meters and another external library has a definition for meters, then they should be able to be linked together by doing:
+In addition, if an external library has a definition for meters and another external library has a definition for meters then they should be able to be linked together by doing:
 
 ```typescript
 import {m as mathLibraryMeterType} from "my-math-library";
