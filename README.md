@@ -74,8 +74,8 @@ time += 5<s>;         // valid
 time += 5;            // error -- cannot convert number to number<s>
 time += distance;     // error -- cannot convert number<m> to number<s>
 
-// Convert to another unit. The following should be thought out more:
-time += (distance as number)<s>;  // valid
+// converting to another unit requires asserting to number then the measure
+time += (distance as number)<s>; // valid
 
 acceleration += 12<m / s**2>;         // valid
 acceleration += 10<a>;                // valid
@@ -100,13 +100,15 @@ time += MyOldLibrary.getSeconds()<s>; // valid
 A dimensionless unit is a unit of measure defined as `number<1>`.
 
 ```typescript
-let ratio = 10<s> / 20<s>, // implicitly typed to number<1>
-    time: number<s>;
+let ratio = 10<s> / 20<s>; // implicitly typed to number<1>
+let time: number<s>;
 
-time = 2<s> * ratio;
-time *= ratio;
-time = 2<s> + ratio; // error, cannot add number<1> to number<s>
-time = ratio;        // error, cannot assign number<1> to number<s>
+time = 2<s> * ratio;         // valid
+time = time / ratio;         // valid
+time = (ratio as number)<s>; // valid
+time = 2<s> + ratio;         // error, cannot assign number<1> to number<s>
+time = ratio;                // error, cannot assign number<1> to number<s>
+time = ratio<s>;             // error, cannot assert number<1> to number<s>
 ```
 
 ## Scope
@@ -140,15 +142,15 @@ The units of measure feature will not create any runtime overhead. For example:
 type measure cm;
 type measure m;
 
-let metersToCentimeters = 100<cm / m>,
-    length: number<cm> = 20<m> * metersToCentimeters;
+let metersToCentimeters = 100<cm / m>;
+let length: number<cm> = 20<m> * metersToCentimeters;
 ```
 
 Compiles to the following JavaScript:
 
 ```typescript
-var metersToCentimeters = 100,
-    length = 20 * metersToCentimeters;
+var metersToCentimeters = 100;
+var length = 20 * metersToCentimeters;
 ```
 
 ## Math Library
